@@ -20,7 +20,7 @@ source_root = meson.current_source_dir()
 build_root = meson.current_build_dir()
 
 # Dependencies
-glib_version = '2.44'
+glib_version = '2.80'
 glib_version_macro = 'GLIB_VERSION_@0@'.format(glib_version.replace('.', '_'))
 glib_dep = declare_dependency(
   dependencies: dependency('glib-2.0', version: f'>= @glib_version@'),
