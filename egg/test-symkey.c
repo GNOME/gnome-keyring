@@ -380,7 +380,7 @@ test_read_cipher (gconstpointer data)
 	egg_asn1x_destroy (asn);
 	g_assert (ret == TRUE);
 
-	block = g_memdup (test->plain_text, test->n_text_length);
+	block = g_memdup2 (test->plain_text, test->n_text_length);
 	gcry = gcry_cipher_encrypt (cih, block, test->n_text_length, NULL, 0);
 	g_assert_cmpint (gcry, ==, 0);
 

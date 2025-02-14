@@ -113,7 +113,7 @@ attribute_dup (CK_ATTRIBUTE_PTR attr)
 	g_assert (attr);
 	copy = g_slice_new (CK_ATTRIBUTE);
 	copy->ulValueLen = attr->ulValueLen;
-	copy->pValue = g_memdup (attr->pValue, copy->ulValueLen);
+	copy->pValue = g_memdup2 (attr->pValue, copy->ulValueLen);
 	copy->type = attr->type;
 	return copy;
 }

@@ -203,27 +203,27 @@ read_value (GkmObject *object, const gchar *property, CK_ATTRIBUTE_PTR *result)
 	case G_TYPE_INT:
 		number = g_value_get_int (&value);
 		attr.ulValueLen = sizeof (number);
-		attr.pValue = g_memdup (&number, attr.ulValueLen);
+		attr.pValue = g_memdup2 (&number, attr.ulValueLen);
 		break;
 	case G_TYPE_UINT:
 		number = g_value_get_uint (&value);
 		attr.ulValueLen = sizeof (number);
-		attr.pValue = g_memdup (&number, attr.ulValueLen);
+		attr.pValue = g_memdup2 (&number, attr.ulValueLen);
 		break;
 	case G_TYPE_LONG:
 		number = g_value_get_long (&value);
 		attr.ulValueLen = sizeof (number);
-		attr.pValue = g_memdup (&number, attr.ulValueLen);
+		attr.pValue = g_memdup2 (&number, attr.ulValueLen);
 		break;
 	case G_TYPE_ULONG:
 		number = g_value_get_ulong (&value);
 		attr.ulValueLen = sizeof (number);
-		attr.pValue = g_memdup (&number, attr.ulValueLen);
+		attr.pValue = g_memdup2 (&number, attr.ulValueLen);
 		break;
 	case G_TYPE_BOOLEAN:
 		boolean = g_value_get_boolean (&value) ? CK_TRUE : CK_FALSE;
 		attr.ulValueLen = sizeof (boolean);
-		attr.pValue = g_memdup (&boolean, attr.ulValueLen);
+		attr.pValue = g_memdup2 (&boolean, attr.ulValueLen);
 		break;
 	default:
 		g_warning ("couldn't convert value from type %s into attribute",

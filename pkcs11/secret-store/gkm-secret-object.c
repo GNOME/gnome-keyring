@@ -416,7 +416,7 @@ gkm_secret_object_begin_modified (GkmSecretObject *self,
 {
 	g_return_if_fail (!gkm_transaction_get_failed (transaction));
 	gkm_transaction_add (transaction, self, complete_set_modified,
-	                     g_memdup (&self->pv->modified, sizeof (gulong)));
+	                     g_memdup2 (&self->pv->modified, sizeof (gulong)));
 
 	self->pv->modified = g_get_real_time () / G_USEC_PER_SEC;
 }

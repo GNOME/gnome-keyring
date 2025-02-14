@@ -318,8 +318,8 @@ gkm_store_register_schema (GkmStore *self, CK_ATTRIBUTE_PTR attr,
 	schema->default_value = attr->pValue;
 	schema->default_length = attr->ulValueLen;
 	if (schema->default_value)
-		schema->default_value = g_memdup (schema->default_value,
-		                                  schema->default_length);
+		schema->default_value = g_memdup2 (schema->default_value,
+		                                   schema->default_length);
 
 	g_hash_table_insert (self->pv->schemas, &(schema->type), schema);
 }

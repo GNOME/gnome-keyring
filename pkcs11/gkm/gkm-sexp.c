@@ -314,7 +314,7 @@ gkm_sexp_extract_buffer (gcry_sexp_t sexp, gchar **buf, gsize *bufsize, ...)
 		const char *data;
 
 		data = gcry_sexp_nth_data (at, 1, &len);
-		*buf = g_memdup (data, len);
+		*buf = g_memdup2 (data, len);
 		*bufsize = len;
 		gcry_sexp_release (at);
 	}

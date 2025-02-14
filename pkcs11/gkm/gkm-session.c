@@ -768,7 +768,7 @@ gkm_session_create_object_for_factory (GkmSession *self, GkmFactory *factory,
 	 * Duplicate the memory for the attributes (but not values) so we
 	 * can 'consume' in the factory function
 	 */
-	template = g_memdup (template, count * sizeof (CK_ATTRIBUTE));
+	template = g_memdup2 (template, count * sizeof (CK_ATTRIBUTE));
 
 	/* Actually create the object */
 	object = (factory->func) (self, transaction, template, count);
@@ -1468,8 +1468,8 @@ gkm_session_C_GenerateKeyPair (GkmSession* self, CK_MECHANISM_PTR mechanism,
 	 * Duplicate the memory for the attributes (but not values) so we
 	 * can 'consume' in the generator and create object functions.
 	 */
-	pub_template = g_memdup (pub_template, pub_count * sizeof (CK_ATTRIBUTE));
-	priv_template = g_memdup (priv_template, priv_count * sizeof (CK_ATTRIBUTE));
+	pub_template = g_memdup2 (pub_template, pub_count * sizeof (CK_ATTRIBUTE));
+	priv_template = g_memdup2 (priv_template, priv_count * sizeof (CK_ATTRIBUTE));
 	transaction = gkm_transaction_new ();
 
 	/* Actually do the object creation */
@@ -1558,7 +1558,7 @@ gkm_session_C_UnwrapKey (GkmSession* self, CK_MECHANISM_PTR mechanism,
 	 * Duplicate the memory for the attributes (but not values) so we
 	 * can 'consume' in the generator and create object functions.
 	 */
-	template = g_memdup (template, count * sizeof (CK_ATTRIBUTE));
+	template = g_memdup2 (template, count * sizeof (CK_ATTRIBUTE));
 
 	rv = gkm_crypto_unwrap_key (self, mechanism, wrapper, wrapped_key,
 	                            wrapped_key_len, template, count, &unwrapped);
@@ -1598,7 +1598,7 @@ gkm_session_C_DeriveKey (GkmSession* self, CK_MECHANISM_PTR mechanism,
 	 * Duplicate the memory for the attributes (but not values) so we
 	 * can 'consume' in the generator and create object functions.
 	 */
-	template = g_memdup (template, count * sizeof (CK_ATTRIBUTE));
+	template = g_memdup2 (template, count * sizeof (CK_ATTRIBUTE));
 
 	/* Actually do the object creation */
 	rv = gkm_crypto_derive_key (self, mechanism, base, template, count, &derived);

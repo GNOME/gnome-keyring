@@ -40,9 +40,9 @@ gkd_secret_secret_new (GkdSecretSession *session,
 		       gsize n_value)
 {
 	return gkd_secret_secret_new_take_memory (session,
-						  g_memdup (parameter, n_parameter),
+						  g_memdup2 (parameter, n_parameter),
 						  n_parameter,
-						  g_memdup (value, n_value),
+						  g_memdup2 (value, n_value),
 						  n_value);
 }
 
@@ -112,9 +112,9 @@ gkd_secret_secret_parse (GkdSecretService *service,
 	}
 
 	secret = gkd_secret_secret_new_take_memory (session,
-	                                            g_memdup (parameter, n_parameter),
+	                                            g_memdup2 (parameter, n_parameter),
 	                                            n_parameter,
-	                                            g_memdup (value, n_value),
+	                                            g_memdup2 (value, n_value),
 	                                            n_value);
 
  out:

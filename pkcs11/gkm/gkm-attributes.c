@@ -614,7 +614,7 @@ gkm_template_new (CK_ATTRIBUTE_PTR attrs, CK_ULONG n_attrs)
 		pat = &g_array_index (template, CK_ATTRIBUTE, i);
 		if (pat->pValue) {
 			g_return_val_if_fail (pat->ulValueLen != (CK_ULONG)-1, NULL);
-			pat->pValue = g_memdup (pat->pValue, pat->ulValueLen ? pat->ulValueLen : 1);
+			pat->pValue = g_memdup2 (pat->pValue, pat->ulValueLen ? pat->ulValueLen : 1);
 		}
 	}
 
@@ -643,7 +643,7 @@ gkm_template_set (GArray *template, CK_ATTRIBUTE_PTR attr)
 	/* Add a new attribute */
 	memcpy (&at, attr, sizeof (at));
 	if (at.pValue)
-		at.pValue = g_memdup (at.pValue, at.ulValueLen ? at.ulValueLen : 1);
+		at.pValue = g_memdup2 (at.pValue, at.ulValueLen ? at.ulValueLen : 1);
 	g_array_append_vals (template, &at, 1);
 }
 

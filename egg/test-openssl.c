@@ -89,7 +89,7 @@ parse_reference (GQuark type,
 
 	g_assert ("no data in PEM callback" && data != NULL);
 	g_assert ("no data in PEM callback" && g_bytes_get_size (data) > 0);
-	test->refenc = g_memdup (g_bytes_get_data (data, NULL), g_bytes_get_size (data));
+	test->refenc = g_memdup2 (g_bytes_get_data (data, NULL), g_bytes_get_size (data));
 	test->n_refenc = g_bytes_get_size (data);
 
 	g_assert ("no headers present in file" && headers != NULL);

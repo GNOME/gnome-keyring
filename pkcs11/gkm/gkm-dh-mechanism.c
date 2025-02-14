@@ -152,10 +152,10 @@ gkm_dh_mechanism_generate (GkmSession *session, CK_ATTRIBUTE_PTR pub_atts,
 	id.type = CKA_ID;
 	if (value.ulValueLen < 16) {
 		id.ulValueLen = value.ulValueLen;
-		id.pValue = g_memdup (value.pValue, value.ulValueLen);
+		id.pValue = g_memdup2 (value.pValue, value.ulValueLen);
 	} else {
 		id.ulValueLen = 16;
-		id.pValue = g_memdup ((guchar*)value.pValue + (value.ulValueLen - 16), id.ulValueLen);
+		id.pValue = g_memdup2 ((guchar*)value.pValue + (value.ulValueLen - 16), id.ulValueLen);
 	}
 
 	transaction = gkm_transaction_new ();

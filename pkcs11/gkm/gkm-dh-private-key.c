@@ -69,7 +69,7 @@ factory_create_dh_private_key (GkmSession *session, GkmTransaction *transaction,
 
 	object = GKM_OBJECT (gkm_dh_private_key_new (gkm_session_get_module (session),
 	                                            manager, prime, base, value,
-	                                            idattr ? g_memdup (idattr->pValue, idattr->ulValueLen) : NULL,
+	                                            idattr ? g_memdup2 (idattr->pValue, idattr->ulValueLen) : NULL,
 	                                            idattr ? idattr->ulValueLen : 0));
 	gkm_attributes_consume (attrs, n_attrs, CKA_PRIME, CKA_BASE, CKA_VALUE, G_MAXULONG);
 

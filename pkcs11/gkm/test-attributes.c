@@ -769,7 +769,7 @@ test_attributes_consume (void)
 	CK_ULONG n_attrs;
 
 	/* Dup because we're writing to this */
-	attrs = g_memdup (attr_template, sizeof (attr_template));
+	attrs = g_memdup2 (attr_template, sizeof (attr_template));
 	n_attrs = G_N_ELEMENTS (attr_template);
 
 	/* All these attributes are there */

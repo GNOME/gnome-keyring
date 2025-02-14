@@ -118,7 +118,7 @@ gkm_secret_key_real_create_attributes (GkmObject *object, GkmSession *session, G
 			self->pv->id = NULL;
 			self->pv->n_id = 0;
 		} else {
-			self->pv->id = g_memdup (id->pValue, id->ulValueLen);
+			self->pv->id = g_memdup2 (id->pValue, id->ulValueLen);
 			self->pv->n_id = id->ulValueLen;
 			gkm_attribute_consume (id);
 		}
