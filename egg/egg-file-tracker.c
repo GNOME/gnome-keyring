@@ -165,9 +165,9 @@ update_directory (EggFileTracker *self, gboolean force_all, GHashTable *checks)
 	while ((filename = g_dir_read_name (dir)) != NULL) {
 		if (filename[0] == '.')
 			continue;
-		if (self->include && !g_pattern_match_string (self->include, filename))
+		if (self->include && !g_pattern_spec_match_string (self->include, filename))
 			continue;
-		if (self->exclude && g_pattern_match_string (self->exclude, filename))
+		if (self->exclude && g_pattern_spec_match_string (self->exclude, filename))
 			continue;
 
 		file = g_build_filename (self->directory_path, filename, NULL);
