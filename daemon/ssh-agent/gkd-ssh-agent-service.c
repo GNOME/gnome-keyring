@@ -263,7 +263,7 @@ ensure_key (GkdSshAgentService *self,
 	                   NULL, &standard_error, &status, &error)) {
 		g_warning ("couldn't run %s: %s", argv[0], error->message);
 		g_error_free (error);
-	} else if (!g_spawn_check_exit_status (status, &error)) {
+	} else if (!g_spawn_check_wait_status (status, &error)) {
 		g_message ("the %s command failed: %s", argv[0], error->message);
 		g_printerr ("%s", _gkd_ssh_agent_canon_error (standard_error));
 		g_free (standard_error);

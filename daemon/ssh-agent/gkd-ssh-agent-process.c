@@ -136,7 +136,7 @@ on_child_watch (GPid pid,
 	self->output_id = 0;
 	self->child_id = 0;
 
-	if (!g_spawn_check_exit_status (status, &error)) {
+	if (!g_spawn_check_wait_status (status, &error)) {
 		g_message ("ssh-agent: %s", error->message);
 		g_error_free (error);
 	}
