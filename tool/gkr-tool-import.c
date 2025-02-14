@@ -25,7 +25,7 @@
 #include "gkr-tool.h"
 
 #include <gck/gck.h>
-#include <gcr/gcr.h>
+#include <gcr/gcr-base.h>
 
 #include "egg/egg-hex.h"
 

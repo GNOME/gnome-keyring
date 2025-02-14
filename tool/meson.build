@@ -9,7 +9,6 @@ gnome_keyring_tool_deps = [
   glib_dep,
   gck_dep,
   gcr_base_dep,
-  gcr_dep,
   libegg_dep,
 ]
 
