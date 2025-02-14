@@ -122,8 +122,8 @@ gkd_ssh_agent_preload_finalize (GObject *object)
 	GkdSshAgentPreload *self = GKD_SSH_AGENT_PRELOAD (object);
 
 	g_free (self->path);
-	g_clear_pointer (&self->keys_by_public_key, (GDestroyNotify) g_hash_table_unref);
-	g_clear_pointer (&self->keys_by_public_filename, (GDestroyNotify) g_hash_table_unref);
+	g_clear_pointer (&self->keys_by_public_key, g_hash_table_unref);
+	g_clear_pointer (&self->keys_by_public_filename, g_hash_table_unref);
 	g_clear_object (&self->file_tracker);
 
 	g_mutex_clear (&self->lock);
