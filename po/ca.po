@@ -69,7 +69,7 @@ msgstr ""
 
 #: daemon/dbus/gkd-secret-change.c:142 daemon/dbus/gkd-secret-create.c:94
 msgid "Store passwords unencrypted?"
-msgstr "Voleu emmagatzemar les contrasenyes desxifrades?"
+msgstr "Voleu emmagatzemar les contrasenyes sense xifrar?"
 
 #: daemon/dbus/gkd-secret-change.c:144 daemon/dbus/gkd-secret-create.c:96
 msgid ""
@@ -410,7 +410,7 @@ msgstr "Desbloca automàticament aquest anell de claus sempre que hagi entrat"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:636
 msgid "Unlock certificate"
-msgstr "Desbloca l'anell de claus"
+msgstr "Desbloca el certificat"
 
 #: pkcs11/wrap-layer/gkm-wrap-prompt.c:638
 msgid "Unlock public key"
