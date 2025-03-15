@@ -1,6 +1,6 @@
 option('ssh-agent',
   type: 'boolean',
-  value: true,
+  value: false,
   description: 'Include SSH agent in gnome-keyring',
 )
 
