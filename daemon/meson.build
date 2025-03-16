@@ -7,12 +7,17 @@ endif
 
 # The daemon executable
 gkr_daemon_sources = files(
-  'gkd-glue.c',
   'gkd-main.c',
   'gkd-capability.c',
   'gkd-pkcs11.c',
   'gkd-util.c',
 )
+
+if get_option('ssh-agent')
+  gkr_daemon_sources += files(
+    'gkd-glue.c',
+  )
+endif
 
 gkr_daemon_deps = [
   gio_dep,
