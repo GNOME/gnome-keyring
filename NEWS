@@ -1,3 +1,7 @@
+Changes in version 48.0 are:
+ * build: Disable ssh-agent by default (and related fixes) [!94]
+ * Updated translations
+
 Changes in version 48.beta are:
  * secret-portal: Set a label for an application key [!32]
  * secret-portal: Set xdg:schema for secrets [!89]
