@@ -1,0 +1,514 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR Umidjon Almasov, 2021.
+# Baxrom Raxmatov
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues/\n"
+"POT-Creation-Date: 2025-02-14 00:24+0000\n"
+"PO-Revision-Date: 2025-03-22 20:12+0500\n"
+"Last-Translator: Baxrom Raxmatov magdiyevbahrom@gmail.com\n"
+"Language-Team: Uzbek\n"
+"Language: uz\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.5\n"
+
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: daemon/dbus/gkd-secret-change.c:84 daemon/dbus/gkd-secret-change.c:120
+#: daemon/dbus/gkd-secret-create.c:78
+#: daemon/ssh-agent/gkd-ssh-agent-service.c:254
+#: pkcs11/secret-store/gkm-secret-collection.c:324
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+msgid "Unnamed"
+msgstr "Nomsiz"
+
+#: daemon/dbus/gkd-secret-change.c:89
+#, c-format
+msgid "Enter the old password for the “%s” keyring"
+msgstr "“%s” kalit halqasi uchun eski parolni kiriting"
+
+#: daemon/dbus/gkd-secret-change.c:93
+#, c-format
+msgid ""
+"An application wants to change the password for the “%s” keyring. Enter the "
+"old password for it."
+msgstr ""
+"Ilova “%s” kalit halqasi uchun parolni oʼzgartirmoqchi. Buning uchun eski "
+"parolni kiriting."
+
+#: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1079
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1192
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1227
+msgid "Continue"
+msgstr "Davom etish"
+
+#: daemon/dbus/gkd-secret-change.c:125
+#, c-format
+msgid "Choose a new password for the “%s” keyring"
+msgstr "“%s” kalit halqasi uchun yangi parolni tanlang"
+
+#: daemon/dbus/gkd-secret-change.c:129
+#, c-format
+msgid ""
+"An application wants to change the password for the “%s” keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Ilova “%s” kalit halqasi uchun parolni oʼzgartirmoqchi. Buning uchun "
+"foydalanmoqchi boʼlgan yangi parolni tanlang."
+
+#: daemon/dbus/gkd-secret-change.c:142 daemon/dbus/gkd-secret-create.c:94
+msgid "Store passwords unencrypted?"
+msgstr "Parollar shifrlanmagan holda saqlansinmi?"
+
+#: daemon/dbus/gkd-secret-change.c:144 daemon/dbus/gkd-secret-create.c:96
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Boʼsh paroldan foydalanishni tanlasangiz, saqlangan parollaringiz xavfsiz "
+"shifrlanmaydi. Ularga fayllaringizga kirish huquqiga ega boʼlgan har bir "
+"kishi foydalanishi mumkin."
+
+#: daemon/dbus/gkd-secret-change.c:152
+msgid "The original password was incorrect"
+msgstr "Asl parol notoʼgʼri edi"
+
+#: daemon/dbus/gkd-secret-change.c:348
+msgid "Change Keyring Password"
+msgstr "Kalit halqasi parolini oʼzgartirish"
+
+#: daemon/dbus/gkd-secret-create.c:80
+#, c-format
+msgid ""
+"An application wants to create a new keyring called “%s”. Choose the "
+"password you want to use for it."
+msgstr ""
+"Ilova “%s” deb nomlangan yangi kalitn halqasini yaratmoqchi. Buning uchun "
+"foydalanmoqchi boʼlgan parolni tanlang."
+
+#: daemon/dbus/gkd-secret-create.c:84
+msgid "Choose password for new keyring"
+msgstr "Yangi kalit halqasi uchun parolni tanlang"
+
+#: daemon/dbus/gkd-secret-create.c:309
+msgid "New Keyring Password"
+msgstr "Yangi kalit halqasi paroli"
+
+#. TRANSLATORS: '%s' is an application id, for example "org.gnome.Maps"
+#: daemon/dbus/gkd-secret-portal.c:382
+#, c-format
+msgid "Application key for %s"
+msgstr "%s uchun ilova kaliti"
+
+#: daemon/gnome-keyring-pkcs11.desktop.in.in:4
+msgid "Certificate and Key Storage"
+msgstr "Sertifikat va kalitlarni saqlash"
+
+#: daemon/gnome-keyring-pkcs11.desktop.in.in:5
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME kalit halqasi: PKCS#11 komponenti"
+
+#: daemon/gnome-keyring-secrets.desktop.in.in:4
+msgid "Secret Storage Service"
+msgstr "Sir saqlash xizmati"
+
+#: daemon/gnome-keyring-secrets.desktop.in.in:5
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME kalit halqasi: Sir xizmati"
+
+#: daemon/gnome-keyring-ssh.desktop.in.in:4
+msgid "SSH Key Agent"
+msgstr "SSH kalit agenti"
+
+#: daemon/gnome-keyring-ssh.desktop.in.in:5
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME kalit halqasi: SSH agenti"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: daemon/login/gkd-login.c:162
+msgid "Login"
+msgstr "Kirish"
+
+#. Get the label ready
+#: daemon/login/gkd-login-interaction.c:191
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Parolni qulfdan chiqarish: %s"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:573
+msgid "Unlock private key"
+msgstr "Shaxsiy kalitni qulfdan chiqarish"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
+msgid "Enter password to unlock the private key"
+msgstr "Shaxsiy kalitni qulfdan chiqarish uchun parolni kiriting"
+
+#. TRANSLATORS: The private key is locked
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:604
+#, c-format
+msgid "An application wants access to the private key “%s”, but it is locked"
+msgstr "Ilova “%s” shaxsiy kalitiga kirishni xohlaydi, lekin u qulflangan"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:589
+msgid "Automatically unlock this key whenever I’m logged in"
+msgstr "Men tizimga kirganimda bu kalit avtomatik ravishda qulfdan chiqarilsin"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:539
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:564
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:579
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+msgid "Unlock"
+msgstr "Qulfdan chiqarish"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+msgid "The unlock password was incorrect"
+msgstr "Qulfni ochish paroli notoʼgʼri"
+
+#: egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "`%s' vaqtinchalik faylini yaratib boʼlmadi: %s\n"
+
+#: egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "`%s'ga yozishda xatolik: %s\n"
+
+#: egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "`%s'ni yaratib boʼlmadi: %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "eskirgan qulf fayli olib tashlanmoqda (%d tomonidan yaratilgan)\n"
+
+#: egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "qulflash kutilmoqda (%d%s tomonidan ushlab turilgan) %s...\n"
+
+#: egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(boshi berkmi?) "
+
+#: egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "`%s' qulflanmadi: %s\n"
+
+#: egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "%s qulflashni kutilmoqda...\n"
+
+#: egg/egg-oid.c:40
+msgid "Domain Component"
+msgstr "Domen komponenti"
+
+#: egg/egg-oid.c:42
+msgid "User ID"
+msgstr "Foydalanuvchi identifikatori"
+
+#: egg/egg-oid.c:45
+msgid "Email Address"
+msgstr "Elektron pochta manzili"
+
+#: egg/egg-oid.c:53
+msgid "Date of Birth"
+msgstr "Tugʼilgan sana"
+
+#: egg/egg-oid.c:55
+msgid "Place of Birth"
+msgstr "Tugʼilgan joyi"
+
+#: egg/egg-oid.c:57
+msgid "Gender"
+msgstr "Jinsi"
+
+#: egg/egg-oid.c:59
+msgid "Country of Citizenship"
+msgstr "Fuqaroligi"
+
+#: egg/egg-oid.c:61
+msgid "Country of Residence"
+msgstr "Yashash mamlakati"
+
+#: egg/egg-oid.c:64
+msgid "Common Name"
+msgstr "Umumiy ismi"
+
+#: egg/egg-oid.c:66
+msgid "Surname"
+msgstr "Familiyasi"
+
+#: egg/egg-oid.c:68
+msgid "Serial Number"
+msgstr "Seriya raqami"
+
+#: egg/egg-oid.c:70
+msgid "Country"
+msgstr "Mamlakat"
+
+#: egg/egg-oid.c:72
+msgid "Locality"
+msgstr "Hudud"
+
+#: egg/egg-oid.c:74
+msgid "State"
+msgstr "Shtat"
+
+#: egg/egg-oid.c:76
+msgid "Street"
+msgstr "Koʼcha"
+
+#: egg/egg-oid.c:78
+msgid "Organization"
+msgstr "Tashkilot"
+
+#: egg/egg-oid.c:80
+msgid "Organizational Unit"
+msgstr "Tashkiliy boʼlinma"
+
+#: egg/egg-oid.c:82
+msgid "Title"
+msgstr "Sarlavha"
+
+#: egg/egg-oid.c:84
+msgid "Telephone Number"
+msgstr "Telefon raqami"
+
+#: egg/egg-oid.c:86
+msgid "Given Name"
+msgstr "Ismi"
+
+#: egg/egg-oid.c:88
+msgid "Initials"
+msgstr "Bosh harflar"
+
+#: egg/egg-oid.c:90
+msgid "Generation Qualifier"
+msgstr "Avlod kvalifikatori"
+
+#: egg/egg-oid.c:92
+msgid "DN Qualifier"
+msgstr "DN kvalifikatori"
+
+#: egg/egg-oid.c:94
+msgid "Pseudonym"
+msgstr "Taxallus"
+
+#: egg/egg-oid.c:97
+msgid "RSA"
+msgstr "RSA"
+
+#: egg/egg-oid.c:98
+msgid "MD2 with RSA"
+msgstr "RSA bilan MD2"
+
+#: egg/egg-oid.c:99
+msgid "MD5 with RSA"
+msgstr "RSA bilan MD5"
+
+#: egg/egg-oid.c:100
+msgid "SHA1 with RSA"
+msgstr "RSA bilan SHA1"
+
+#: egg/egg-oid.c:102
+msgid "DSA"
+msgstr "DSA"
+
+#: egg/egg-oid.c:103
+msgid "SHA1 with DSA"
+msgstr "DSA bilan SHA1"
+
+#. Extended Key Usages
+#: egg/egg-oid.c:106
+msgid "Server Authentication"
+msgstr "Server autentifikatsiyasi"
+
+#: egg/egg-oid.c:107
+msgid "Client Authentication"
+msgstr "Mijoz autentifikatsiyasi"
+
+#: egg/egg-oid.c:108
+msgid "Code Signing"
+msgstr "Kodni imzolash"
+
+#: egg/egg-oid.c:109
+msgid "Email Protection"
+msgstr "Elektron pochta himoyasi"
+
+#: egg/egg-oid.c:110
+msgid "Time Stamping"
+msgstr "Vaqtni belgilash"
+
+#: pkcs11/gkm/gkm-certificate.c:578
+msgid "Unnamed Certificate"
+msgstr "Nomsiz sertifikat"
+
+#: pkcs11/ssh-store/gkm-ssh-private-key.c:341
+msgid "Couldn’t parse public SSH key"
+msgstr "Ochiq SSH kalitini tahlil qilib boʼlmadi"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:529
+msgid "Unlock Login Keyring"
+msgstr "Kirish kaliti halqasini qulfdan chiqarish"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:530
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:554
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:706
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+msgid "Authentication required"
+msgstr "Autentifikatsiya talab qilinadi"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:533
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"Kompyuteringizga kirish uchun ishlatadigan parolingiz endi kirish kalit "
+"halqangiz paroliga mos kelmaydi."
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:535
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr "Kompyuteringizga kirganingizda kalit halqasi qulfdan chiqarilmadi."
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:553
+msgid "Unlock Keyring"
+msgstr "Kalit halqasini qulfdan chiqarish"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:556
+#, c-format
+msgid "An application wants access to the keyring “%s”, but it is locked"
+msgstr "Ilova “%s” kalit halqasiga kirishni xohlaydi, lekin u qulflangan"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:562
+msgid "Automatically unlock this keyring whenever I’m logged in"
+msgstr ""
+"Men tizimga kirganimda bu kalit halqasi avtomatik ravishda qulfdan "
+"chiqarilsin"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:575
+msgid "Unlock certificate"
+msgstr "Sertifikatni qulfdan chiqarish"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:577
+msgid "Unlock public key"
+msgstr "Umumiy kalitni qulfdan chiqarish"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+msgid "Automatically unlock this certificate whenever I’m logged in"
+msgstr ""
+"Men tizimga kirganimda ushbu sertifikat avtomatik ravishda qulfdan "
+"chiqarilsin"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:593
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1076
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1225
+msgid "Automatically unlock whenever I’m logged in"
+msgstr "Men tizimga kirganimda avtomatik ravishda qulfdan chiqarilsin"
+
+#. TRANSLATORS: The certificate is locked
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:607
+#, c-format
+msgid "An application wants access to the certificate “%s”, but it is locked"
+msgstr "Ilova “%s” sertifikatiga kirishni xohlaydi, lekin u qulflangan"
+
+#. TRANSLATORS: The public key is locked
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:610
+#, c-format
+msgid "An application wants access to the public key “%s”, but it is locked"
+msgstr "Ilova “%s” ochiq kalitiga kirishni xohlaydi, lekin u qulflangan"
+
+#. TRANSLATORS: The object '%s' is locked
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:613
+#, c-format
+msgid "An application wants access to “%s”, but it is locked"
+msgstr "Ilova “%s”ga kirishni xohlaydi, lekin u qulflangan"
+
+#. Build up the prompt
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+msgid "Unlock certificate/key storage"
+msgstr "Sertifikat/kalit xotirasini qulfdan chiqarish"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage “%s”, but it is "
+"locked"
+msgstr ""
+"Ilova “%s” sertifikat/kalit xotirasiga kirishni xohlaydi, lekin u qulflangan"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1067
+msgid "New Password Required"
+msgstr "Yangi parol talab qilinadi"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1068
+msgid "New password required"
+msgstr "Yangi parol talab qilinadi"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1070
+#, c-format
+msgid ""
+"In order to prepare “%s” for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"“%s”ni sertifikatlar yoki kalitlarni saqlashga tayyorlash uchun parol talab "
+"qilinadi"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1185
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1216
+msgid "Change Password"
+msgstr "Parolni oʼzgartirish"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1188
+#, c-format
+msgid "To change the password for “%s”, the original password is required"
+msgstr "“%s” parolini oʼzgartirish uchun asl parol talab qilinadi"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1217
+msgid "Change password"
+msgstr "Parolni oʼzgartirish"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1219
+#, c-format
+msgid "Type a new password for “%s”"
+msgstr "“%s” uchun yangi parol kiriting"
+
+#: tool/gkr-tool.c:100
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "foydalanish: gnome-keyring buyruq [variantlar]\n"
+
+#: tool/gkr-tool.c:102
+msgid "commands: "
+msgstr "buyruqlar: "
+
+#. Translators: keep same length as translated message "commands: "
+#: tool/gkr-tool.c:106
+msgid "          "
+msgstr "          "
