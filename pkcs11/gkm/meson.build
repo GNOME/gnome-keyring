@@ -68,8 +68,9 @@ libgkm_dep = declare_dependency(
   link_with: libgkm,
   include_directories: [
     include_directories('.'),
-    include_directories('..'), # for gkm-marshal.h
-  ]
+    include_directories('..'), # for gkm/gkm-{crypto,assertion}.h
+  ],
+  sources: gkm_marshal[1],
 )
 
 # Tests
