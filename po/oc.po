@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues/\n"
-"POT-Creation-Date: 2025-02-22 12:14+0000\n"
-"PO-Revision-Date: 2025-02-27 09:02+1100\n"
+"POT-Creation-Date: 2025-04-11 00:09+0000\n"
+"PO-Revision-Date: 2025-04-12 16:49+1000\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 "X-Launchpad-Export-Date: 2015-05-20 16:44+0000\n"
 "X-Project-Style: gnome\n"
 
@@ -122,11 +122,11 @@ msgstr "Trossèl de claus GNOME : component PKCS#11"
 
 #: daemon/gnome-keyring-secrets.desktop.in.in:4
 msgid "Secret Storage Service"
-msgstr "Servici d'emmagazinatge secret"
+msgstr "Servici d'emmagazinatge secrèt"
 
 #: daemon/gnome-keyring-secrets.desktop.in.in:5
 msgid "GNOME Keyring: Secret Service"
-msgstr "Trossèl de claus GNOME : servici secret"
+msgstr "Trossèl de claus GNOME : servici secrèt"
 
 #: daemon/gnome-keyring-ssh.desktop.in.in:4
 msgid "SSH Key Agent"
@@ -328,7 +328,7 @@ msgstr "RSA"
 
 #: egg/egg-oid.c:98
 msgid "MD2 with RSA"
-msgstr "MD amb RSA"
+msgstr "MD2 amb RSA"
 
 #: egg/egg-oid.c:99
 msgid "MD5 with RSA"
@@ -336,7 +336,7 @@ msgstr "MD5 amb RSA"
 
 #: egg/egg-oid.c:100
 msgid "SHA1 with RSA"
-msgstr "SHA+ amb RSA"
+msgstr "SHA1 amb RSA"
 
 #: egg/egg-oid.c:102
 msgid "DSA"
@@ -353,7 +353,7 @@ msgstr "Servidor d'autentificacion"
 
 #: egg/egg-oid.c:107
 msgid "Client Authentication"
-msgstr "Autentificacion de client"
+msgstr "Client d’autentificacion"
 
 #: egg/egg-oid.c:108
 msgid "Code Signing"
