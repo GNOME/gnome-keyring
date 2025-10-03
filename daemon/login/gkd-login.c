@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include "gkd-login.h"
+#include "gkd-login-context.h"
 
 #include "daemon/gkd-pkcs11.h"
 
@@ -149,6 +150,8 @@ static GckObject*
 create_login_keyring (GckSession *session, GckObject *cred, GError **error)
 {
 	GckBuilder builder = GCK_BUILDER_INIT;
+	GckObject *collection;
+	GkdLoginContext *context;
 
 	g_return_val_if_fail (GCK_IS_SESSION (session), NULL);
 	g_return_val_if_fail (GCK_IS_OBJECT (cred), NULL);
@@ -161,7 +164,12 @@ create_login_keyring (GckSession *session, GckObject *cred, GError **error)
 	/* TRANSLATORS: This is the display label for the login keyring */
 	gck_builder_add_string (&builder, CKA_LABEL, _("Login"));
 
-	return gck_session_create_object (session, gck_builder_end (&builder), NULL, error);
+	context = gkd_login_context_get_default ();
+	collection = gck_session_create_object (session, gck_builder_end (&builder), NULL, error);
+	if (collection)
+		gkd_login_context_emit_keyring_created (context, collection);
+
+	return collection;
 }
 
 static GckObject*

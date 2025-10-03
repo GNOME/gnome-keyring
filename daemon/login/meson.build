@@ -2,6 +2,7 @@ libgkd_login_sources = files(
   'gkd-login.c',
   'gkd-login-interaction.c',
   'gkd-login-password.c',
+  'gkd-login-context.c',
 )
 
 libgkd_login_deps = [
