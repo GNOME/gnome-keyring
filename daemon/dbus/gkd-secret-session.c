@@ -288,7 +288,7 @@ session_method_close (GkdExportedSession *skeleton,
 		      GkdSecretSession *self)
 {
 	if (!gkd_dbus_invocation_matches_caller (invocation, self->caller))
-		return FALSE;
+		return TRUE;
 
 	gkd_secret_service_close_session (self->service, self);
 	gkd_exported_session_complete_close (skeleton, invocation);

@@ -111,7 +111,7 @@ prompt_method_prompt (GkdExportedPrompt *skeleton,
 		      GkdSecretPrompt *self)
 {
 	if (!gkd_dbus_invocation_matches_caller (invocation, self->pv->caller))
-		return FALSE;
+		return TRUE;
 
 	/* Act as if this object no longer exists */
 	if (self->pv->completed)
@@ -142,7 +142,7 @@ prompt_method_dismiss (GkdExportedPrompt *skeleton,
 		       GkdSecretPrompt *self)
 {
 	if (!gkd_dbus_invocation_matches_caller (invocation, self->pv->caller))
-		return FALSE;
+		return TRUE;
 
 	/* Act as if this object no longer exists */
 	if (self->pv->completed)
