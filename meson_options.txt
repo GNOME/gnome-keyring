@@ -1,3 +1,9 @@
+option('libcap-ng',
+  type: 'feature',
+  value: 'auto',
+  description: 'Add support for Linux capabilities',
+)
+
 option('ssh-agent',
   type: 'boolean',
   value: false,

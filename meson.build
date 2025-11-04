@@ -37,7 +37,7 @@ threads_dep = dependency('threads')
 gck_dep = dependency('gck-1', version: '>= 3.3.4')
 gcr_base_dep = dependency('gcr-base-3', version: '>= 3.27.90')
 libgcrypt_dep = dependency('libgcrypt', version: '>= 1.2.2')
-libcap_ng_dep = dependency('libcap-ng', required: false)
+libcap_ng_dep = dependency('libcap-ng', required: get_option('libcap-ng'))
 p11_kit_dep = dependency('p11-kit-1')
 
 libselinux_dep = dependency('libselinux', required: get_option('selinux'))
