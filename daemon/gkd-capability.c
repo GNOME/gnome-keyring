@@ -30,6 +30,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/resource.h>
+#include <sys/time.h>
 
 #ifdef HAVE_LIBCAPNG
 
@@ -47,6 +49,33 @@ early_warning (const char *warn_string)
 {
 	if (!getenv ("GNOME_KEYRING_TEST_SERVICE"))
 		fprintf (stderr, "gnome-keyring-daemon: %s\n", warn_string);
+}
+
+/* This is arbitrary. Empirically, 256K seems to be enough. */
+#define ENOUGH_LOCKED_MEMORY_BYTES (256 * 1024)
+
+static void
+check_memlock (const char *message_if_not)
+{
+	struct rlimit rlim = {};
+
+	if (getrlimit (RLIMIT_MEMLOCK, &rlim) == 0) {
+		if (rlim.rlim_cur == RLIM_INFINITY ||
+		    rlim.rlim_cur >= ENOUGH_LOCKED_MEMORY_BYTES) {
+			/* this seems like enough, no need for a warning */
+			return;
+		}
+
+		rlim.rlim_cur = rlim.rlim_max;
+
+		if ((rlim.rlim_cur == RLIM_INFINITY ||
+		     rlim.rlim_cur >= ENOUGH_LOCKED_MEMORY_BYTES) &&
+		    setrlimit (RLIMIT_MEMLOCK, &rlim) == 0) {
+			return;
+		}
+	}
+
+	early_warning (message_if_not);
 }
 
 #endif /* HAVE_LIPCAPNG */
@@ -87,13 +116,13 @@ gkd_capability_obtain_capability_and_drop_privileges (void)
 			early_error ("error getting process capabilities", 0);
 			break;
 		case CAPNG_NONE:
-			early_warning ("no process capabilities, insecure memory might get used");
+			check_memlock ("no process capabilities, insecure memory might get used");
 			break;
 		case CAPNG_PARTIAL: { /* File system based capabilities */
 			capng_select_t set = CAPNG_SELECT_CAPS;
 			if (!capng_have_capability (CAPNG_EFFECTIVE,
 							    CAP_IPC_LOCK)) {
-				early_warning ("insufficient process capabilities, insecure memory might get used");
+				check_memlock ("insufficient process capabilities, insecure memory might get used");
 			}
 
 			/* If we don't have CAP_SETPCAP, we can't update the
