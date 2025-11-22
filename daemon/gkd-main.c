@@ -243,7 +243,7 @@ egg_memory_fallback (void *p, size_t sz)
 	/* We were asked to allocate */
 	if (!p) {
 		if (do_warning) {
-			g_message (WARNING);
+			g_warning (WARNING);
 			do_warning = FALSE;
 		}
 
@@ -718,7 +718,7 @@ gkr_daemon_startup_steps (const gchar *components)
 
 	if (strstr (components, GKD_COMP_SSH)) {
 		if (ssh_started) {
-			g_message ("The SSH agent was already initialized");
+			g_warning ("The SSH agent was already initialized");
 		} else {
 			ssh_started = TRUE;
 			if (!gkd_daemon_startup_ssh ()) {
@@ -774,7 +774,7 @@ gkr_daemon_initialize_steps (const gchar *components)
 	/* The Secret Service API */
 	if (strstr (components, GKD_COMP_SECRETS) || strstr (components, GKD_COMP_KEYRING)) {
 		if (secrets_started) {
-			g_message ("The Secret Service was already initialized");
+			g_warning ("The Secret Service was already initialized");
 		} else {
 			if (!dbus_started) {
 				dbus_started = TRUE;
@@ -794,7 +794,7 @@ gkr_daemon_initialize_steps (const gchar *components)
 	/* The PKCS#11 remoting */
 	if (strstr (components, GKD_COMP_PKCS11)) {
 		if (pkcs11_started) {
-			g_message ("The PKCS#11 component was already initialized");
+			g_warning ("The PKCS#11 component was already initialized");
 		} else {
 			pkcs11_started = TRUE;
 			if (!gkd_pkcs11_startup_pkcs11 ()) {
