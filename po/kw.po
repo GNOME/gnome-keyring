@@ -1,0 +1,521 @@
+# Cornish translation for gnome-keyring.
+# Copyright (C) 2026 gnome-keyring's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-keyring package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Flynn Peck <cirilla@tuta.io>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-keyring main\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues/\n"
+"POT-Creation-Date: 2025-02-14 00:56+0000\n"
+"PO-Revision-Date: 2026-01-31 12:54+0000\n"
+"Last-Translator: Flynn Peck <cirilla@tuta.io>\n"
+"Language-Team: kw\n"
+"Language: kw\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-DL-VCS-Web: https://gitlab.gnome.org/GNOME/gnome-keyring/\n"
+"X-DL-Lang: kw\n"
+"X-DL-Module: gnome-keyring\n"
+"X-DL-Branch: main\n"
+"X-DL-Domain: po\n"
+"X-DL-State: Translating\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 49.0\n"
+
+#. TRANSLATORS: This is the label for an keyring created without a label
+#: daemon/dbus/gkd-secret-change.c:84 daemon/dbus/gkd-secret-change.c:120
+#: daemon/dbus/gkd-secret-create.c:78
+#: daemon/ssh-agent/gkd-ssh-agent-service.c:254
+#: pkcs11/secret-store/gkm-secret-collection.c:324
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:672
+msgid "Unnamed"
+msgstr "Anhenwys"
+
+#: daemon/dbus/gkd-secret-change.c:89
+#, c-format
+msgid "Enter the old password for the “%s” keyring"
+msgstr "Ynworra an ger-tremena kyns rag an alhwedh-kylgh “%s”"
+
+#: daemon/dbus/gkd-secret-change.c:93
+#, c-format
+msgid ""
+"An application wants to change the password for the “%s” keyring. Enter the "
+"old password for it."
+msgstr ""
+"Unn app mynnes chanjya an ger-tremena rag an alhwedh-kylgh “%s”. Ynworra an "
+"ger-tremena kyns."
+
+#: daemon/dbus/gkd-secret-change.c:99 daemon/dbus/gkd-secret-change.c:135
+#: daemon/dbus/gkd-secret-change.c:146 pkcs11/wrap-layer/gkm-wrap-prompt.c:1079
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1192
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1227
+msgid "Continue"
+msgstr "Pesya"
+
+#: daemon/dbus/gkd-secret-change.c:125
+#, c-format
+msgid "Choose a new password for the “%s” keyring"
+msgstr "Dewis unn ger-tremena nowydh rag an alhwedh-kylgh “%s”"
+
+#: daemon/dbus/gkd-secret-change.c:129
+#, c-format
+msgid ""
+"An application wants to change the password for the “%s” keyring. Choose the "
+"new password you want to use for it."
+msgstr ""
+"Unn app mynnes chanjya an ger-tremena rag an alhwedh-kylgh “%s”. Dewis an "
+"ger-tremena nowydh ty mynnes devnydhya."
+
+#: daemon/dbus/gkd-secret-change.c:142 daemon/dbus/gkd-secret-create.c:94
+msgid "Store passwords unencrypted?"
+msgstr "Gwitha geryow-tremena anargelys?"
+
+#: daemon/dbus/gkd-secret-change.c:144 daemon/dbus/gkd-secret-create.c:96
+msgid ""
+"By choosing to use a blank password, your stored passwords will not be "
+"safely encrypted. They will be accessible by anyone with access to your "
+"files."
+msgstr ""
+"Der ow dewis devnydhya unn ger-tremena gwag, dha ger-tremena gwithys a wra "
+"na bos argelys yn saw. I a wra bos hedhadow gans nebonan gans hedhas dhe dha "
+"restrennow."
+
+#: daemon/dbus/gkd-secret-change.c:152
+msgid "The original password was incorrect"
+msgstr "An ger-tremena gwreydhek yw anewn"
+
+#: daemon/dbus/gkd-secret-change.c:348
+msgid "Change Keyring Password"
+msgstr "Chanjya Ger-Tremena Alhwedh-Kylgh"
+
+#: daemon/dbus/gkd-secret-create.c:80
+#, c-format
+msgid ""
+"An application wants to create a new keyring called “%s”. Choose the "
+"password you want to use for it."
+msgstr ""
+"Unn app mynnes gul unn alhwedh-kylgh nowydh henwys “%s”. Dewis an ger-"
+"tremena ty mynnes devnydhya."
+
+#: daemon/dbus/gkd-secret-create.c:84
+msgid "Choose password for new keyring"
+msgstr "Dewis ger-tremena rag alhwedh-kylgh nowydh"
+
+#: daemon/dbus/gkd-secret-create.c:309
+msgid "New Keyring Password"
+msgstr "Ger-Tremena Alhwedh-Kylgh Nowydh"
+
+#. TRANSLATORS: '%s' is an application id, for example "org.gnome.Maps"
+#: daemon/dbus/gkd-secret-portal.c:382
+#, c-format
+msgid "Application key for %s"
+msgstr "Alhwedh app rag %s"
+
+#: daemon/gnome-keyring-pkcs11.desktop.in.in:3
+msgid "Certificate and Key Storage"
+msgstr "Gwithva Testskrif hag Alhwedh"
+
+#: daemon/gnome-keyring-pkcs11.desktop.in.in:4
+msgid "GNOME Keyring: PKCS#11 Component"
+msgstr "GNOME Alhwedh-Kylgh: Darn PKCS#11"
+
+#: daemon/gnome-keyring-secrets.desktop.in.in:3
+msgid "Secret Storage Service"
+msgstr "Gonis Gwithva Kevrinek"
+
+#: daemon/gnome-keyring-secrets.desktop.in.in:4
+msgid "GNOME Keyring: Secret Service"
+msgstr "GNOME Alhwedh-Kylgh: Gonis Kevrinek"
+
+#: daemon/gnome-keyring-ssh.desktop.in.in:3
+msgid "SSH Key Agent"
+msgstr "Maynor Alhwedh SSH"
+
+#: daemon/gnome-keyring-ssh.desktop.in.in:4
+msgid "GNOME Keyring: SSH Agent"
+msgstr "GNOME Alhwedh-Kylgh: Maynor Alhwedh SSH"
+
+#. TRANSLATORS: This is the display label for the login keyring
+#: daemon/login/gkd-login.c:162
+msgid "Login"
+msgstr "Omgelmyans"
+
+#. Get the label ready
+#: daemon/login/gkd-login-interaction.c:191
+#: pkcs11/wrap-layer/gkm-wrap-login.c:345
+#, c-format
+msgid "Unlock password for: %s"
+msgstr "Dialhwedha ger-tremena rag: %s"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:100
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:573
+msgid "Unlock private key"
+msgstr "Dialhwedha alhwedh privedh"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:101
+msgid "Enter password to unlock the private key"
+msgstr "Ynworra ger-tremena rag dialhwedha an alhwedh privedh"
+
+#. TRANSLATORS: The private key is locked
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:104
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:604
+#, c-format
+msgid "An application wants access to the private key “%s”, but it is locked"
+msgstr "Unn app mynnes hedhas dhe'n alhwedh privedh “%s”, mes yth yw alhwedhys"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:111
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:589
+msgid "Automatically unlock this key whenever I’m logged in"
+msgstr "Dialhwedha yn awtomatek an alhwedh ma peskytter ov omgelmys"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:113
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:539
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:564
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:579
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:640
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:686
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:718
+msgid "Unlock"
+msgstr "Dialhwedha"
+
+#: daemon/ssh-agent/gkd-ssh-agent-interaction.c:116
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:684
+msgid "The unlock password was incorrect"
+msgstr "An ger-tremena dialhwedha yw anewn"
+
+#: egg/dotlock.c:668
+#, c-format
+msgid "failed to create temporary file `%s': %s\n"
+msgstr "fyllis gul restren anbarghus `%s': %s\n"
+
+#: egg/dotlock.c:718
+#, c-format
+msgid "error writing to `%s': %s\n"
+msgstr "error ow skrif orth `%s': %s\n"
+
+#: egg/dotlock.c:782
+#, c-format
+msgid "can't create `%s': %s\n"
+msgstr "ny yllir gul `%s': %s\n"
+
+#. Note: It is unlikley that we get a race here unless a pid is
+#. reused too fast or a new process with the same pid as the one
+#. of the stale file tries to lock right at the same time as we.
+#: egg/dotlock.c:1048
+#, c-format
+msgid "removing stale lockfile (created by %d)\n"
+msgstr "ow remova florenrestren diwedhys (gwrys gans %d)\n"
+
+#: egg/dotlock.c:1084
+#, c-format
+msgid "waiting for lock (held by %d%s) %s...\n"
+msgstr "ow gortos rag floren (synsys gans %d%s) %s...\n"
+
+#: egg/dotlock.c:1085
+msgid "(deadlock?) "
+msgstr "(stagsav?)"
+
+#: egg/dotlock.c:1124
+#, c-format
+msgid "lock `%s' not made: %s\n"
+msgstr "floren `%s' na gwrys: %s\n"
+
+#: egg/dotlock.c:1150
+#, c-format
+msgid "waiting for lock %s...\n"
+msgstr "ow gortos rag floren %s...\n"
+
+#: egg/egg-oid.c:40
+msgid "Domain Component"
+msgstr "Darn Arlotteth"
+
+#: egg/egg-oid.c:42
+msgid "User ID"
+msgstr "ID Usyer"
+
+#: egg/egg-oid.c:45
+msgid "Email Address"
+msgstr "Triva Ebost"
+
+#: egg/egg-oid.c:53
+msgid "Date of Birth"
+msgstr "Dedhyas Dinythyans"
+
+#: egg/egg-oid.c:55
+msgid "Place of Birth"
+msgstr "Tyller Dinythyans"
+
+#: egg/egg-oid.c:57
+msgid "Gender"
+msgstr "Reydh"
+
+#: egg/egg-oid.c:59
+msgid "Country of Citizenship"
+msgstr "Bro Burjysi"
+
+#: egg/egg-oid.c:61
+msgid "Country of Residence"
+msgstr "Bro Bewnans"
+
+#: egg/egg-oid.c:64
+msgid "Common Name"
+msgstr "Hanow Kemmyn"
+
+#: egg/egg-oid.c:66
+msgid "Surname"
+msgstr "Hanow Teylu"
+
+#: egg/egg-oid.c:68
+msgid "Serial Number"
+msgstr "Niver Kesresek"
+
+#: egg/egg-oid.c:70
+msgid "Country"
+msgstr "Bro"
+
+#: egg/egg-oid.c:72
+msgid "Locality"
+msgstr "Tyller"
+
+#: egg/egg-oid.c:74
+msgid "State"
+msgstr "Stat"
+
+#: egg/egg-oid.c:76
+msgid "Street"
+msgstr "Stret"
+
+#: egg/egg-oid.c:78
+msgid "Organization"
+msgstr "Kowethyans"
+
+#: egg/egg-oid.c:80
+msgid "Organizational Unit"
+msgstr "Unsys Restriansek"
+
+#: egg/egg-oid.c:82
+msgid "Title"
+msgstr "Titel"
+
+#: egg/egg-oid.c:84
+msgid "Telephone Number"
+msgstr "Niver Pellgowser"
+
+#: egg/egg-oid.c:86
+msgid "Given Name"
+msgstr "Hanow Kynsa"
+
+#: egg/egg-oid.c:88
+msgid "Initials"
+msgstr "Tallytherennow"
+
+#: egg/egg-oid.c:90
+msgid "Generation Qualifier"
+msgstr "Reythher Dinythyans"
+
+#: egg/egg-oid.c:92
+msgid "DN Qualifier"
+msgstr "Reythher DN"
+
+#: egg/egg-oid.c:94
+msgid "Pseudonym"
+msgstr "Leshanow"
+
+#: egg/egg-oid.c:97
+msgid "RSA"
+msgstr "RSA"
+
+#: egg/egg-oid.c:98
+msgid "MD2 with RSA"
+msgstr "MD2 gans RSA"
+
+#: egg/egg-oid.c:99
+msgid "MD5 with RSA"
+msgstr "MD5 gans RSA"
+
+#: egg/egg-oid.c:100
+msgid "SHA1 with RSA"
+msgstr "SHA1 gans RSA"
+
+#: egg/egg-oid.c:102
+msgid "DSA"
+msgstr "DSA"
+
+#: egg/egg-oid.c:103
+msgid "SHA1 with DSA"
+msgstr "SHA1 gans DSA"
+
+#. Extended Key Usages
+#: egg/egg-oid.c:106
+msgid "Server Authentication"
+msgstr "Reythheans Servell"
+
+#: egg/egg-oid.c:107
+msgid "Client Authentication"
+msgstr "Reythheans Kliens"
+
+#: egg/egg-oid.c:108
+msgid "Code Signing"
+msgstr "Sinans Kod"
+
+#: egg/egg-oid.c:109
+msgid "Email Protection"
+msgstr "Difresyans Ebost"
+
+#: egg/egg-oid.c:110
+msgid "Time Stamping"
+msgstr "Merkyans Termyn"
+
+#: pkcs11/gkm/gkm-certificate.c:578
+msgid "Unnamed Certificate"
+msgstr "Testskrif Anhenwys"
+
+#: pkcs11/ssh-store/gkm-ssh-private-key.c:341
+msgid "Couldn’t parse public SSH key"
+msgstr "Ny yllir redya alhwedh poblek SSH"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:529
+msgid "Unlock Login Keyring"
+msgstr "Dialhwedha Alhwedh-Klygh Omgelmyans"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:530
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:554
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:630
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:706
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1186
+msgid "Authentication required"
+msgstr "Omgelmyans a res"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:533
+msgid ""
+"The password you use to log in to your computer no longer matches that of "
+"your login keyring."
+msgstr ""
+"An ger-tremena ty devnydhya rag omgelmi yn dha amontyell na fella omdhesedha "
+"dha alhwedh-kylgh omgelmyans."
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:535
+msgid ""
+"The login keyring did not get unlocked when you logged into your computer."
+msgstr ""
+"An alhwedh-kylgh omgelmyans na bos dialhwedhys pan ty omgelmys yn dha "
+"amontyell."
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:553
+msgid "Unlock Keyring"
+msgstr "Dialhwedha Alhwedh-Klygh"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:556
+#, c-format
+msgid "An application wants access to the keyring “%s”, but it is locked"
+msgstr "Unn app mynnes hedhas dhe'n alhwedh-kylgh “%s”, mes yth yw alhwedhys"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:562
+msgid "Automatically unlock this keyring whenever I’m logged in"
+msgstr "Dialhwedha yn awtomatek an alhwedh-kylgh ma peskytter ov omgelmys"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:575
+msgid "Unlock certificate"
+msgstr "Dialhwedha testskrif"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:577
+msgid "Unlock public key"
+msgstr "Dialhwedha alhwedh poblek"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:591
+msgid "Automatically unlock this certificate whenever I’m logged in"
+msgstr "Dialhwedha yn awtomatek an testskrif ma peskytter ov omgelmys"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:593
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:715
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1076
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1225
+msgid "Automatically unlock whenever I’m logged in"
+msgstr "Dialhwedha yn awtomatek pysketter ov omgelmys"
+
+#. TRANSLATORS: The certificate is locked
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:607
+#, c-format
+msgid "An application wants access to the certificate “%s”, but it is locked"
+msgstr "Unn app mynnes hedhas dhe'n testskrif “%s”, mes yth yw alhwedhys"
+
+#. TRANSLATORS: The public key is locked
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:610
+#, c-format
+msgid "An application wants access to the public key “%s”, but it is locked"
+msgstr "Unn app mynnes hedhas dhe'n alhwedh poblek “%s”, mes yth yw alhwedhys"
+
+#. TRANSLATORS: The object '%s' is locked
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:613
+#, c-format
+msgid "An application wants access to “%s”, but it is locked"
+msgstr "Unn app mynnes hedhas dhe “%s”, mes yth yw alhwedhys"
+
+#. Build up the prompt
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:705
+msgid "Unlock certificate/key storage"
+msgstr "Dialhwedha gwithva testskrif/alhwedh"
+
+#. TRANSLATORS: The storage is locked, and needs unlocking before the application can use it.
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:709
+#, c-format
+msgid ""
+"An application wants access to the certificate/key storage “%s”, but it is "
+"locked"
+msgstr ""
+"Unn app mynnes hedhas dhe'n gwithva testskrif/alhwedh “%s”, mes yth yw "
+"alhwedhys"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1067
+msgid "New Password Required"
+msgstr "Ger-Tremena Nowydh A Res"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1068
+msgid "New password required"
+msgstr "Ger-tremena nowydh a res"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1070
+#, c-format
+msgid ""
+"In order to prepare “%s” for storage of certificates or keys, a password is "
+"required"
+msgstr ""
+"Rag darbari “%s” rag gwithans a testskrifow hag alhwedhow, unn ger-tremena a "
+"res"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1185
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1216
+msgid "Change Password"
+msgstr "Chanjya Ger-Tremena"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1188
+#, c-format
+msgid "To change the password for “%s”, the original password is required"
+msgstr "Rag chanjya an ger-tremena rag “%s”, an ger-tremena kyns a res"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1217
+msgid "Change password"
+msgstr "Chanjya ger-tremena"
+
+#: pkcs11/wrap-layer/gkm-wrap-prompt.c:1219
+#, c-format
+msgid "Type a new password for “%s”"
+msgstr "Jynnskrifa unn ger-tremena nowydh rag “%s”"
+
+#: tool/gkr-tool.c:100
+#, c-format
+msgid "usage: gnome-keyring command [options]\n"
+msgstr "usadow: arghadow gnome-keyring [dewisyow]\n"
+
+#: tool/gkr-tool.c:102
+msgid "commands: "
+msgstr "arghadow:"
+
+#. Translators: keep same length as translated message "commands: "
+#: tool/gkr-tool.c:106
+msgid "          "
+msgstr "          "
