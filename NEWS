@@ -1,3 +1,11 @@
+Changes in version 50.0 are:
+ * daemon: Don't warn about CAP_IPC_LOCK if RLIMIT_MEMLOCK is enough [!41]
+ * Replace deprecated security_context_t [!73]
+ * meson: Add gkm_marshal header to libgkm sources [!96]
+ * meson: allow disabling libcap-ng explicitly [!101]
+ * daemon: Replace some messages with warnings [!102]
+ * Updated translations
+
 Changes in version 48.0 are:
  * build: Disable ssh-agent by default (and related fixes) [!94]
  * Updated translations
