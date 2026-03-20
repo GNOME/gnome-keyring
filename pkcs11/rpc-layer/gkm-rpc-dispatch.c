@@ -2385,12 +2385,14 @@ gkm_rpc_layer_startup (const char *prefix)
 	if (bind (sock, (struct sockaddr*)&addr, sizeof (addr)) < 0) {
 		gkm_rpc_warn ("couldn't bind to pkcs11 socket: %s: %s",
 		                  pkcs11_socket_path, strerror (errno));
+		close(sock);
 		return -1;
 	}
 
 	if (listen (sock, 128) < 0) {
 		gkm_rpc_warn ("couldn't listen on pkcs11 socket: %s: %s",
 		                  pkcs11_socket_path, strerror (errno));
+		close(sock);
 		return -1;
 	}
 
