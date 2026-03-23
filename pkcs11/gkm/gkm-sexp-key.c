@@ -289,7 +289,7 @@ CK_RV
 gkm_sexp_key_set_ec_params (GkmSexpKey *self, int algo, CK_ATTRIBUTE_PTR attr)
 {
 	CK_RV rv;
-	gchar *curve_name;
+	g_autofree gchar *curve_name = NULL;
 	GBytes *data;
 	int algorithm;
 	gcry_sexp_t numbers;
@@ -317,7 +317,6 @@ gkm_sexp_key_set_ec_params (GkmSexpKey *self, int algo, CK_ATTRIBUTE_PTR attr)
 	rv = gkm_attribute_set_bytes (attr, data);
 	g_bytes_unref (data);
 	gcry_sexp_release (numbers);
-	g_free (curve_name);
 
 	return rv;
 }

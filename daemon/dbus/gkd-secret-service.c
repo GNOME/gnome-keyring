@@ -817,8 +817,8 @@ service_method_change_with_master_password (GkdExportedInternal *skeleton,
 					    GVariant *master_variant,
 					    GkdSecretService *self)
 {
-	GkdSecretSecret *original, *master;
-	GckObject *collection;
+	GkdSecretSecret *original = NULL, *master = NULL;
+	GckObject *collection = NULL;
 	GError *error = NULL;
 	const gchar *sender;
 
@@ -829,14 +829,14 @@ service_method_change_with_master_password (GkdExportedInternal *skeleton,
 					    original_variant, &error);
 	if (original == NULL) {
 		g_dbus_method_invocation_take_error (invocation, error);
-		return TRUE;
+		goto cleanup;
 	}
 
 	master = gkd_secret_secret_parse (self, sender,
 					  master_variant, &error);
 	if (master == NULL) {
 		g_dbus_method_invocation_take_error (invocation, error);
-		return TRUE;
+		goto cleanup;
 	}
 
 	/* Make sure we have such a collection */
@@ -859,6 +859,7 @@ service_method_change_with_master_password (GkdExportedInternal *skeleton,
 	else
 		gkd_secret_propagate_error (invocation, "Couldn't change collection password", error);
 
+cleanup:
 	gkd_secret_secret_free (original);
 	gkd_secret_secret_free (master);
 

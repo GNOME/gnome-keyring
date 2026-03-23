@@ -797,6 +797,26 @@ collection_method_create_item (GkdExportedCollection *skeleton,
 		return TRUE;
 	}
 
+	base = g_dbus_method_invocation_get_object_path (invocation);
+
+	/* We exported this path ourselves and the object always carries a
+	 * session, so check these invariants before allocating anything */
+	if (!gkd_secret_util_parse_path (base, &identifier, NULL)) {
+		g_object_unref (object);
+		g_return_val_if_reached (FALSE);
+	}
+
+	if (identifier == NULL) {
+		g_object_unref (object);
+		g_return_val_if_reached (FALSE);
+	}
+
+	pkcs11_session = gck_object_get_session (object);
+	if (pkcs11_session == NULL) {
+		g_object_unref (object);
+		g_return_val_if_reached (FALSE);
+	}
+
 	if (!gkd_secret_property_parse_all (properties, SECRET_ITEM_INTERFACE, &builder)) {
 		g_dbus_method_invocation_return_error_literal (invocation, G_DBUS_ERROR,
 							       G_DBUS_ERROR_INVALID_ARGS,
@@ -804,7 +824,6 @@ collection_method_create_item (GkdExportedCollection *skeleton,
 		goto cleanup;
 	}
 
-	base = g_dbus_method_invocation_get_object_path (invocation);
 	secret = gkd_secret_secret_parse (self->service, g_dbus_method_invocation_get_sender (invocation),
 					  secret_variant, &error);
 
@@ -813,13 +832,6 @@ collection_method_create_item (GkdExportedCollection *skeleton,
 		error = NULL;
 		goto cleanup;
 	}
-
-	if (!gkd_secret_util_parse_path (base, &identifier, NULL))
-		g_return_val_if_reached (FALSE);
-	g_return_val_if_fail (identifier, FALSE);
-
-	pkcs11_session = gck_object_get_session (object);
-	g_return_val_if_fail (pkcs11_session, FALSE);
 
 	attrs = gck_attributes_ref_sink (gck_builder_end (&builder));
 

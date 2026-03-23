@@ -240,7 +240,7 @@ factory_create_collection (GkmSession *session, GkmTransaction *transaction,
 	CK_ATTRIBUTE *attr;
 	GkmManager *manager;
 	GkmModule *module;
-	gchar *identifier = NULL;
+	g_autofree gchar *identifier = NULL;
 	GkmSecretData *sdata;
 	gchar *label = NULL;
 	GkmCredential *cred;
@@ -334,7 +334,6 @@ factory_create_collection (GkmSession *session, GkmTransaction *transaction,
 	                           NULL);
 
 	gkm_secret_object_mark_created (GKM_SECRET_OBJECT (collection));
-	g_free (identifier);
 	g_free (label);
 
 	gkm_credential_connect (cred, GKM_OBJECT (collection));
