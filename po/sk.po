@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-keyring\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-keyring/issues/\n"
-"POT-Creation-Date: 2025-08-10 17:35+0000\n"
-"PO-Revision-Date: 2025-08-13 08:08+0200\n"
+"POT-Creation-Date: 2025-02-14 00:56+0000\n"
+"PO-Revision-Date: 2026-04-22 14:26+0200\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -137,7 +137,7 @@ msgstr "SSH agent zväzku kľúčov GNOME"
 #. TRANSLATORS: This is the display label for the login keyring
 #: daemon/login/gkd-login.c:162
 msgid "Login"
-msgstr "Prihlasovacie meno"
+msgstr "Prihlásenie"
 
 #. Get the label ready
 #: daemon/login/gkd-login-interaction.c:191
@@ -235,7 +235,7 @@ msgstr "Identifikátor používateľa"
 
 #: egg/egg-oid.c:45
 msgid "Email Address"
-msgstr "Emailová adresa"
+msgstr "E-mailová adresa"
 
 #: egg/egg-oid.c:53
 msgid "Date of Birth"
@@ -360,11 +360,11 @@ msgstr "Overenie totožnosti klienta"
 
 #: egg/egg-oid.c:108
 msgid "Code Signing"
-msgstr "Podpisovanie údajov"
+msgstr "Podpisovanie kódu"
 
 #: egg/egg-oid.c:109
 msgid "Email Protection"
-msgstr "Ochrana emailov"
+msgstr "Ochrana e-mailov"
 
 #: egg/egg-oid.c:110
 msgid "Time Stamping"
@@ -506,6 +506,7 @@ msgid "Type a new password for “%s”"
 msgstr "Napíšte nové heslo pre „%s“"
 
 #: tool/gkr-tool.c:100
+#, c-format
 msgid "usage: gnome-keyring command [options]\n"
 msgstr "použitie: gnome-keyring príkaz [voľby]\n"
 
