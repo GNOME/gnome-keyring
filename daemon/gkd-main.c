@@ -131,7 +131,7 @@ static GDBusConnection *system_bus_connection = NULL;
 
 static GOptionEntry option_entries[] = {
 	{ "start", 's', 0, G_OPTION_ARG_NONE, &run_for_start,
-	  "Start a dameon or initialize an already running daemon." },
+	  "Start a daemon or initialize an already running daemon." },
 	{ "replace", 'r', 0, G_OPTION_ARG_NONE, &run_for_replace,
 	  "Replace the daemon for this desktop login environment." },
 	{ "foreground", 'f', 0, G_OPTION_ARG_NONE, &run_foreground,
@@ -1000,7 +1000,7 @@ main (int argc, char *argv[])
 	 * as possible. We expect a login password on the stdin, and unlock
 	 * or create the login keyring.
 	 *
-	 * Then later we expect gnome-keyring-dameon to be run again with the
+	 * Then later we expect gnome-keyring-daemon to be run again with the
 	 * --start option. This second gnome-keyring-daemon will hook the
 	 * original daemon up with environment variables necessary to initialize
 	 * itself and bring it into the session. This second daemon usually exits.
