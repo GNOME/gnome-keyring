@@ -607,6 +607,7 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GckObject *item,
 
 	value = gck_session_wrap_key_full (session, self->key, &mech, item, &n_value,
 					   NULL, &error);
+	g_object_unref (session);
 
 	/*
 	 * gck_object_get_session() returns a new reference, so drop it again.
