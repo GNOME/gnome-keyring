@@ -142,10 +142,21 @@ gkm_dh_mechanism_generate (GkmSession *session, CK_ATTRIBUTE_PTR pub_atts,
 	/* Write the public key out to raw data */
 	value.type = CKA_VALUE;
 	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &length, pub);
-	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+	if (gcry != 0) {
+		g_warning ("couldn't measure public DH key");
+		gcry_mpi_release (pub);
+		gcry_mpi_release (priv);
+		return CKR_GENERAL_ERROR;
+	}
 	value.pValue = g_malloc (length);
 	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value.pValue, length, &length, pub);
-	g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
+	if (gcry != 0) {
+		g_warning ("couldn't write out public DH key");
+		g_free (value.pValue);
+		gcry_mpi_release (pub);
+		gcry_mpi_release (priv);
+		return CKR_GENERAL_ERROR;
+	}
 	value.ulValueLen = length;
 
 	/* Create an identifier */
@@ -169,17 +180,37 @@ gkm_dh_mechanism_generate (GkmSession *session, CK_ATTRIBUTE_PTR pub_atts,
 		/* Write the private key out to raw data */
 		value.type = CKA_VALUE;
 		gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &length, priv);
-		g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
-		value.pValue = egg_secure_alloc (length);
-		gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value.pValue, length, &length, priv);
-		g_return_val_if_fail (gcry == 0, CKR_GENERAL_ERROR);
-		value.ulValueLen = length;
-
-		*priv_key = create_dh_object (session, transaction, CKO_PRIVATE_KEY, &value,
-		                              aprime, abase, &id, priv_atts, n_priv_atts);
-		egg_secure_clear (value.pValue, value.ulValueLen);
-		egg_secure_free (value.pValue);
+		if (gcry != 0) {
+			g_warning ("couldn't measure private DH key");
+			gkm_transaction_fail (transaction, CKR_GENERAL_ERROR);
+			length = 0;
+		}
+		if (gcry == 0) {
+			value.pValue = egg_secure_alloc (length);
+			gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value.pValue, length,
+			                       &length, priv);
+			if (gcry != 0) {
+				g_warning ("couldn't write out private DH key");
+				gkm_transaction_fail (transaction, CKR_GENERAL_ERROR);
+			} else {
+				value.ulValueLen = length;
+				*priv_key = create_dh_object (session, transaction,
+				                              CKO_PRIVATE_KEY, &value,
+				                              aprime, abase, &id,
+				                              priv_atts, n_priv_atts);
+			}
+			egg_secure_clear (value.pValue, length);
+			egg_secure_free (value.pValue);
+		}
 	}
+
+	/*
+	 * Release the generated MPIs. The private one lives in libgcrypt's secure
+	 * memory, which is a small, mlock()ed pool, so leaking it here made every
+	 * Secret Service session permanently consume non-pageable memory.
+	 */
+	gcry_mpi_release (pub);
+	gcry_mpi_release (priv);
 
 	g_free (id.pValue);
 
