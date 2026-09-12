@@ -155,6 +155,9 @@ mark_as_complete (GkdSecretUnlock *self, gboolean dismissed)
 		return FALSE;
 	self->completed = TRUE;
 
+	g_free (self->current);
+	self->current = NULL;
+
 	g_variant_builder_init (&builder, G_VARIANT_TYPE ("ao"));
 	for (i = 0; i < self->results->len; ++i) {
 		value = g_array_index (self->results, gchar*, i);
@@ -208,8 +211,6 @@ on_unlock_complete (GObject *object, GAsyncResult *res, gpointer user_data)
 
 	/* The user cancelled the protected auth prompt */
 	} else if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
-		g_free (self->current);
-		self->current = NULL;
 		mark_as_complete (self, TRUE);
 
 	/* The operation was cancelled via Dismiss call */
