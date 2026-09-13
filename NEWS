@@ -1,3 +1,14 @@
+Changes in version 51.0 are:
+ * daemon: Register the login collection on D-Bus on creation [!99, #137, #151]
+ * daemon: Fix D-Bus double response issue in secret service methods [!100]
+ * daemon: Fix crash when prompt is dismissed [!110, #37]
+ * daemon: Don't leak session on GetSecret/Unlock [!107]
+ * daemon: Fix memory leaks in DH key exchange that grow with every client connection [!108]
+ * build: Restore gettext i18n init broken during meson port [!105, #189]
+ * Fix potential FD leak in gkm_rpc_layer_startup [!103, #185]
+ * Drop conversion from GConf [!109]
+ * Updated translations
+
 Changes in version 50.0 are:
  * daemon: Don't warn about CAP_IPC_LOCK if RLIMIT_MEMLOCK is enough [!41]
  * Replace deprecated security_context_t [!73]
