@@ -313,7 +313,7 @@ prompt_method_prompt (GkdExportedPrompt *skeleton,
 		      GkdSecretUnlock *self)
 {
 	if (!gkd_dbus_invocation_matches_caller (invocation, self->caller))
-		return FALSE;
+		return TRUE;
 
 	/* Act as if this object no longer exists */
 	if (self->completed)
@@ -340,7 +340,7 @@ prompt_method_dismiss (GkdExportedPrompt *skeleton,
 		       GkdSecretUnlock *self)
 {
 	if (!gkd_dbus_invocation_matches_caller (invocation, self->caller))
-		return FALSE;
+		return TRUE;
 
 	/* Act as if this object no longer exists */
 	if (self->completed)
