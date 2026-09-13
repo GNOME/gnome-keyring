@@ -681,6 +681,10 @@ gkd_secret_unlock_with_password (GckObject *collection, const guchar *password,
 	gck_builder_add_data (&builder, CKA_VALUE, password, n_password);
 
 	cred = gck_session_create_object (session, gck_builder_end (&builder), NULL, &error);
+
+	/* gck_object_get_session() returned a new reference; drop it again */
+	g_object_unref (session);
+
 	if (cred == NULL) {
 		if (g_error_matches (error, GCK_ERROR, CKR_PIN_INCORRECT)) {
 			g_set_error_literal (error_out, GKD_SECRET_DAEMON_ERROR,

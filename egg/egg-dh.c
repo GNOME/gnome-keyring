@@ -329,10 +329,17 @@ egg_dh_gen_secret (gcry_mpi_t peer, gcry_mpi_t priv,
 
 	/* Write out the secret */
 	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &n_prime, prime);
-	g_return_val_if_fail (gcry == 0, NULL);
+	if (gcry != 0) {
+		gcry_mpi_release (k);
+		g_return_val_if_reached (NULL);
+	}
 	value = egg_secure_alloc (n_prime);
 	gcry = gcry_mpi_print (GCRYMPI_FMT_USG, value, n_prime, &n_value, k);
-	g_return_val_if_fail (gcry == 0, NULL);
+	if (gcry != 0) {
+		egg_secure_free (value);
+		gcry_mpi_release (k);
+		g_return_val_if_reached (NULL);
+	}
 
 	/* Pad the secret with zero bytes to match length of prime in bytes. */
 	if (n_value < n_prime) {
@@ -343,8 +350,15 @@ egg_dh_gen_secret (gcry_mpi_t peer, gcry_mpi_t priv,
 #if DEBUG_DH_SECRET
 	g_printerr ("DH SECRET: ");
 	gcry_mpi_dump (k);
-	gcry_mpi_release (k);
 #endif
+
+	/*
+	 * Release the shared secret MPI. It was allocated with gcry_mpi_snew(),
+	 * i.e. in libgcrypt's mlock()ed secure memory pool, so leaking it both
+	 * exhausts that small pool and keeps secret key material in memory for
+	 * the lifetime of the process.
+	 */
+	gcry_mpi_release (k);
 
 	*bytes = n_prime;
 

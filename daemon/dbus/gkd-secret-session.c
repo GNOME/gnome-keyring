@@ -608,6 +608,13 @@ gkd_secret_session_get_item_secret (GkdSecretSession *self, GckObject *item,
 	value = gck_session_wrap_key_full (session, self->key, &mech, item, &n_value,
 					   NULL, &error);
 
+	/*
+	 * gck_object_get_session() returns a new reference, so drop it again.
+	 * Not doing so leaks a GckSession on every GetSecret call, which in turn
+	 * keeps the client's PKCS#11 session alive after the client is gone.
+	 */
+	g_object_unref (session);
+
 	if (error != NULL) {
 		if (g_error_matches (error, GCK_ERROR, CKR_USER_NOT_LOGGED_IN)) {
 			g_set_error_literal (error_out, GKD_SECRET_ERROR,
