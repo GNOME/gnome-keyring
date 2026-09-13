@@ -39,6 +39,8 @@
 #include "gkd-internal-generated.h"
 #include "gkd-secrets-generated.h"
 
+#include "daemon/login/gkd-login-context.h"
+
 #include "egg/egg-error.h"
 #include "egg/egg-unix-credentials.h"
 
@@ -938,6 +940,33 @@ service_name_owner_changed (GDBusConnection *connection,
 		g_hash_table_remove (self->clients, object_name);
 }
 
+static void
+on_login_keyring_created (GkdLoginContext *context,
+                          GckObject       *keyring,
+                          gpointer         user_data)
+{
+	GkdSecretService *self = GKD_SECRET_SERVICE (user_data);
+	gpointer identifier;
+	gsize n_identifier;
+	char *path;
+	GError *error = NULL;
+
+	g_debug ("intercepted new login keyring, registering on dbus");
+
+	identifier = gck_object_get_data (keyring, CKA_ID, NULL, &n_identifier, &error);
+	if (identifier == NULL) {
+		g_warning ("couldn't get login keyring identifier: %s", egg_error_message (error));
+		g_clear_error (&error);
+		return;
+	}
+
+	path = gkd_secret_util_build_path (SECRET_COLLECTION_PREFIX, identifier, n_identifier);
+	gkd_secret_service_emit_collection_created (self, path);
+
+	g_free (path);
+	g_free (identifier);
+}
+
 /* -----------------------------------------------------------------------------
  * OBJECT
  */
@@ -974,6 +1003,7 @@ gkd_secret_service_constructor (GType type,
 	GError *error = NULL;
 	GckSlot *slot = NULL;
 	guint i;
+	GkdLoginContext *login_ctx;
 
 	g_return_val_if_fail (self, NULL);
 	g_return_val_if_fail (self->connection, NULL);
@@ -1054,6 +1084,13 @@ gkd_secret_service_constructor (GType type,
 							self, NULL);
 
 	gkd_secret_service_init_collections (self);
+
+	login_ctx = gkd_login_context_get_default ();
+	g_signal_connect_object (login_ctx,
+	                         "keyring-created",
+	                         G_CALLBACK (on_login_keyring_created),
+	                         self,
+	                         G_CONNECT_DEFAULT);
 
 	return G_OBJECT (self);
 }
