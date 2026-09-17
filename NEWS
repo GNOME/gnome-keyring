@@ -1,3 +1,6 @@
+Changes in version 51.1 are:
+ * daemon: Fix double unref of session [!114, #197]
+
 Changes in version 51.0 are:
  * daemon: Register the login collection on D-Bus on creation [!99, #137, #151]
  * daemon: Fix D-Bus double response issue in secret service methods [!100]
